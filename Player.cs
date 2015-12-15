@@ -4,38 +4,38 @@ using System.Collections;
 public class Player : MonoBehaviour 
 {
 	private Rigidbody2D myRigidbody = null; // To cache the rigidboy2D
-	private float moveLeft = -1f; // To move the player left
-	private Transform myTransform = null; // To cache the transform of the object
 	private Vector3 vec3Scale; // To cache the vectors of the object
-	[SerializeField]
-	private float vec3ScaleX = 1; // To cache Vec3X value
-	[SerializeField]
-	private float vec3ScaleY = 1; // To cache Vec3Y value
-	[SerializeField]
-	private float vec3ScaleZ = 1; // To cache Vec3Z value
 	private float flip = -1; // To turn the player to left from right or to flip upside down
-	private float horizontal; // To cache the left/right movement
 	private float vertical; // To cache the up/down movement  (Jump or Drop)
 	[SerializeField]
 	private float movementSpeed;
+	private bool facingRight;
 
 	
 	void Awake () 
 	{
+		facingRight = true;
 		myRigidbody = GetComponent<Rigidbody2D> ();
-		myTransform = GetComponent<Transform> ();
-		vec3Scale = new Vector3 (vec3ScaleX, vec3ScaleY, vec3ScaleZ);
-		horizontal = Input.GetAxis("Horizontal");
 		vertical = Input.GetAxis("Vertical");
 	}
 
-	void Update () 
+	void FixedUpdate () 
 	{
-		horizontal = Input.GetAxis("Horizontal");
-		HandleMovement ();
+		float horizontal = Input.GetAxis("Horizontal");
+		HandleMovement (horizontal);
+		Flip (horizontal);
 	}
-	 private void HandleMovement()
-	{
 
-		//myTransform.localScale = new Vector3 (vec3Scale.x * flip, vec3Scale.y, vec3Scale.z);
-		myRigidbody.velocity = new Vector2 (horizontal, vertical) * movementSpeed;
+	 private void HandleMovement(float horizontal)
+	{
+		myRigidbody.velocity = new Vector2 (horizontal * movementSpeed, myRigidbody.velocity.y);
+	}
+
+	private void Flip( float horizontal)
+	{
+		if (horizontal > 0 && !facingRight || horizontal < 0 && facingRight)
+			facingRight = !facingRight;
+			Vector3 theScale = transform.localScale;
+			theScale.x *= flip;
+			transform.localScale = theScale;
+	}
