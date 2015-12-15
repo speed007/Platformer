@@ -34,8 +34,10 @@ public class Player : MonoBehaviour
 	private void Flip( float horizontal)
 	{
 		if (horizontal > 0 && !facingRight || horizontal < 0 && facingRight)
+		{
 			facingRight = !facingRight;
 			Vector3 theScale = transform.localScale;
 			theScale.x *= flip;
 			transform.localScale = theScale;
+		}
 	}
